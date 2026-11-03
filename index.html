@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CPU Scheduler Simulator untuk mempelajari algoritma SJF dan MLFQ.">
+    <title>CPU Scheduler Simulator</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script type="module" src="./js/app.js"></script>
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <a class="brand" href="#dashboard" aria-label="CPU Scheduler, Dashboard">
+                <span class="brand-mark"><i data-lucide="cpu"></i></span>
+                <span>
+                    <strong>CPU Scheduler</strong>
+                    <small>SIMULATOR</small>
+                </span>
+            </a>
+
+            <div class="nav-label">MENU UTAMA</div>
+
+            <nav class="main-nav" aria-label="Navigasi utama">
+                <button class="nav-link active" data-page="dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-link" data-page="sjf">
+                    <i data-lucide="cpu"></i>
+                    <span>Simulasi SJF</span>
+                </button>
+                <button class="nav-link" data-page="mlfq">
+                    <i data-lucide="layers"></i>
+                    <span>Simulasi MLFQ</span>
+                </button>
+                <button class="nav-link" data-page="comparison">
+                    <i data-lucide="git-compare"></i>
+                    <span>Perbandingan</span>
+                </button>
+                <button class="nav-link" data-page="guide">
+                    <i data-lucide="book-open"></i>
+                    <span>Panduan</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-note">
+                    <i data-lucide="graduation-cap"></i>
+                    <span>
+                        Media pembelajaran<br>
+                        <strong>Sistem Operasi</strong>
+                    </span>
+                </div>
+                <small>CPU Scheduler Simulator · v1.0</small>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="topbar">
+                <button class="icon-button mobile-menu" id="menuToggle" aria-label="Buka menu">
+                    <i data-lucide="menu"></i>
+                </button>
+
+                <div class="breadcrumb">
+                    <span>Workspace</span>
+                    <i data-lucide="chevron-right"></i>
+                    <strong id="breadcrumbCurrent">Dashboard</strong>
+                </div>
+
+                <div class="topbar-actions">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Simulator siap digunakan</span>
+                </div>
+            </header>
+
+            <div class="content">
+                <section class="page active" id="page-dashboard">
+                    <div class="page-heading">
+                        <div>
+                            <p class="eyebrow">OVERVIEW</p>
+                            <h1>Dashboard</h1>
+                            <p class="subtitle">Kelola proses dan pelajari bagaimana CPU menjadwalkan eksekusi.</p>
+                        </div>
+                        <button class="btn btn-primary" data-go="sjf">
+                            <i data-lucide="play"></i>
+                            Mulai simulasi
+                        </button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <article class="stat-card">
+                            <div class="stat-top">
+                                <span>Total proses</span>
+                                <i data-lucide="workflow"></i>
+                            </div>
+                            <strong id="statProcesses">—</strong>
+                            <small>Proses dalam dataset aktif</small>
+                        </article>
+
+                        <article class="stat-card">
+                            <div class="stat-top">
+                                <span>Total waktu simulasi</span>
+                                <i data-lucide="clock-3"></i>
+                            </div>
+                            <strong id="statTime">—</strong>
+                            <small>Waktu penyelesaian terakhir</small>
+                        </article>
+
+                        <article class="stat-card">
+                            <div class="stat-top">
+                                <span>Rata-rata waiting time</span>
+                                <i data-lucide="hourglass"></i>
+                            </div>
+                            <strong id="statWaiting">—</strong>
+                            <small>Hasil algoritma terakhir</small>
+                        </article>
+
+                        <article class="stat-card">
+                            <div class="stat-top">
+                                <span>Rata-rata turnaround</span>
+                                <i data-lucide="timer"></i>
+                            </div>
+                            <strong id="statTurnaround">—</strong>
+                            <small>Hasil algoritma terakhir</small>
+                        </article>
+                    </div>
+
+                    <div class="two-column">
+                        <article class="panel algorithm-card">
+                            <div class="algorithm-icon green">
+                                <i data-lucide="cpu"></i>
+                            </div>
+                            <p class="eyebrow">NON-PREEMPTIVE</p>
+                            <h2>Shortest Job First</h2>
+                            <p>CPU memilih proses dengan burst time paling kecil dari seluruh proses yang sudah tiba dan siap dieksekusi.</p>
+                            <button class="text-button" data-go="sjf">
+                                Buka simulasi SJF
+                                <i data-lucide="arrow-up-right"></i>
+                            </button>
+                        </article>
+
+                        <article class="panel algorithm-card">
+                            <div class="algorithm-icon rose">
+                                <i data-lucide="layers"></i>
+                            </div>
+                            <p class="eyebrow">MULTI-LEVEL QUEUE</p>
+                            <h2>Multilevel Feedback Queue</h2>
+                            <p>Proses bergerak di antara tiga antrean prioritas berdasarkan penggunaan quantum dan kedatangan proses baru.</p>
+                            <button class="text-button" data-go="mlfq">
+                                Buka simulasi MLFQ
+                                <i data-lucide="arrow-up-right"></i>
+                            </button>
+                        </article>
+                    </div>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Dataset proses</h2>
+                                <p>Data yang sama digunakan untuk menjalankan kedua algoritma.</p>
+                            </div>
+                            <div class="button-row">
+                                <button class="btn btn-secondary btn-small" id="loadSample">
+                                    <i data-lucide="database"></i>
+                                    Gunakan data contoh
+                                </button>
+                                <button class="btn btn-ghost btn-small" id="resetData">
+                                    <i data-lucide="rotate-ccw"></i>
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <form id="processForm" class="process-form">
+                            <div class="field">
+                                <label for="processId">Process ID</label>
+                                <input id="processId" type="text" placeholder="Contoh: P1" maxlength="12" autocomplete="off">
+                            </div>
+                            <div class="field">
+                                <label for="arrivalTime">Arrival Time</label>
+                                <input id="arrivalTime" type="number" min="0" step="1" placeholder="0">
+                            </div>
+                            <div class="field">
+                                <label for="burstTime">Burst Time</label>
+                                <input id="burstTime" type="number" min="1" step="1" placeholder="5">
+                            </div>
+                            <button class="btn btn-primary add-button" type="submit">
+                                <i data-lucide="plus"></i>
+                                Tambah proses
+                            </button>
+                        </form>
+
+                        <p id="formMessage" class="form-message" role="status" aria-live="polite"></p>
+
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Process ID</th>
+                                        <th>Arrival Time</th>
+                                        <th>Burst Time</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="processTableBody">
+                                    <tr>
+                                        <td colspan="4" class="empty-cell">Belum ada proses. Tambahkan proses atau gunakan data contoh.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Diagram eksekusi terakhir</h2>
+                                <p id="dashboardGanttCaption">Jalankan simulasi untuk melihat diagram Gantt.</p>
+                            </div>
+                        </div>
+                        <div id="dashboardGantt" class="empty-state">Belum ada hasil simulasi.</div>
+                    </section>
+                </section>
+
+                <section class="page" id="page-sjf">
+                    <div class="page-heading">
+                        <div>
+                            <p class="eyebrow">CPU SCHEDULING</p>
+                            <h1>Simulasi SJF</h1>
+                            <p class="subtitle">Shortest Job First · Non-Preemptive</p>
+                        </div>
+                        <button class="btn btn-primary" id="runSjf">
+                            <i data-lucide="play"></i>
+                            Jalankan SJF
+                        </button>
+                    </div>
+
+                    <div class="callout">
+                        <i data-lucide="info"></i>
+                        <span>SJF memilih burst time terpendek di antara proses yang sudah tiba. Proses yang mulai berjalan akan diselesaikan tanpa interupsi.</span>
+                    </div>
+
+                    <div class="stats-grid compact-stats">
+                        <article class="stat-card">
+                            <span>Avg. Waiting Time</span>
+                            <strong id="sjfAvgWt">—</strong>
+                        </article>
+                        <article class="stat-card">
+                            <span>Avg. Turnaround Time</span>
+                            <strong id="sjfAvgTat">—</strong>
+                        </article>
+                        <article class="stat-card">
+                            <span>Avg. Response Time</span>
+                            <strong id="sjfAvgRt">—</strong>
+                        </article>
+                        <article class="stat-card">
+                            <span>Total waktu simulasi</span>
+                            <strong id="sjfTotal">—</strong>
+                        </article>
+                    </div>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Diagram Gantt</h2>
+                                <p>Lebar setiap segmen sebanding dengan durasi eksekusi.</p>
+                            </div>
+                        </div>
+                        <div id="sjfGantt" class="empty-state">Jalankan simulasi untuk menghasilkan diagram.</div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Hasil perhitungan SJF</h2>
+                                <p>Seluruh waktu dihitung berdasarkan urutan eksekusi aktual.</p>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Process</th>
+                                        <th>AT</th>
+                                        <th>BT</th>
+                                        <th>Start</th>
+                                        <th>CT</th>
+                                        <th>TAT</th>
+                                        <th>WT</th>
+                                        <th>RT</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sjfResultBody">
+                                    <tr>
+                                        <td colspan="8" class="empty-cell">Belum ada hasil perhitungan.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Urutan pemilihan proses</h2>
+                            </div>
+                        </div>
+                        <ol id="sjfExplanation" class="explanation-list">
+                            <li>Belum ada simulasi.</li>
+                        </ol>
+                    </section>
+                </section>
+
+                <section class="page" id="page-mlfq">
+                    <div class="page-heading">
+                        <div>
+                            <p class="eyebrow">CPU SCHEDULING</p>
+                            <h1>Simulasi MLFQ</h1>
+                            <p class="subtitle">Multilevel Feedback Queue · 3 antrean prioritas</p>
+                        </div>
+                        <button class="btn btn-primary" id="runMlfq">
+                            <i data-lucide="play"></i>
+                            Jalankan MLFQ
+                        </button>
+                    </div>
+
+                    <section class="panel settings-panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Konfigurasi antrean</h2>
+                                <p>Atur quantum sebelum menjalankan simulasi.</p>
+                            </div>
+                        </div>
+                        <div class="queue-settings">
+                            <div class="field">
+                                <label for="q1Quantum">Queue 1 · Quantum</label>
+                                <input id="q1Quantum" type="number" min="1" step="1" value="2">
+                            </div>
+                            <div class="field">
+                                <label for="q2Quantum">Queue 2 · Quantum</label>
+                                <input id="q2Quantum" type="number" min="1" step="1" value="4">
+                            </div>
+                            <div class="queue-info">
+                                <span class="queue-pill q1">Q1 · Prioritas tinggi</span>
+                                <span class="queue-pill q2">Q2 · Prioritas menengah</span>
+                                <span class="queue-pill q3">Q3 · FCFS</span>
+                            </div>
+                        </div>
+                        <p id="mlfqMessage" class="form-message" role="status" aria-live="polite"></p>
+                    </section>
+
+                    <div class="callout">
+                        <i data-lucide="info"></i>
+                        <span>Preemption hanya terjadi ketika proses baru tiba di Q1 saat proses Q2/Q3 sedang berjalan. Proses yang terinterupsi mempertahankan level antrean dan sisa quantum-nya.</span>
+                    </div>
+
+                    <div class="stats-grid compact-stats">
+                        <article class="stat-card">
+                            <span>Avg. Waiting Time</span>
+                            <strong id="mlfqAvgWt">—</strong>
+                        </article>
+                        <article class="stat-card">
+                            <span>Avg. Turnaround Time</span>
+                            <strong id="mlfqAvgTat">—</strong>
+                        </article>
+                        <article class="stat-card">
+                            <span>Avg. Response Time</span>
+                            <strong id="mlfqAvgRt">—</strong>
+                        </article>
+                        <article class="stat-card">
+                            <span>Total waktu simulasi</span>
+                            <strong id="mlfqTotal">—</strong>
+                        </article>
+                    </div>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Timeline MLFQ</h2>
+                                <p>Setiap segmen menunjukkan proses dan level antrean saat dieksekusi.</p>
+                            </div>
+                        </div>
+                        <div id="mlfqGantt" class="empty-state">Jalankan simulasi untuk menghasilkan timeline.</div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Hasil perhitungan MLFQ</h2>
+                                <p>Kolom antrean menunjukkan level yang pernah ditempati proses.</p>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Process</th>
+                                        <th>AT</th>
+                                        <th>BT</th>
+                                        <th>CT</th>
+                                        <th>TAT</th>
+                                        <th>WT</th>
+                                        <th>RT</th>
+                                        <th>Riwayat antrean</th>
+                                        <th>Preemption</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="mlfqResultBody">
+                                    <tr>
+                                        <td colspan="9" class="empty-cell">Belum ada hasil perhitungan.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Langkah eksekusi</h2>
+                                <p>Urutan kejadian selama simulasi berlangsung.</p>
+                            </div>
+                        </div>
+                        <ol id="mlfqExplanation" class="explanation-list">
+                            <li>Belum ada simulasi.</li>
+                        </ol>
+                    </section>
+                </section>
+
+                <section class="page" id="page-comparison">
+                    <div class="page-heading">
+                        <div>
+                            <p class="eyebrow">ANALISIS HASIL</p>
+                            <h1>Perbandingan algoritma</h1>
+                            <p class="subtitle">Bandingkan SJF dan MLFQ menggunakan dataset proses yang sama.</p>
+                        </div>
+                        <button class="btn btn-primary" id="runCompare">
+                            <i data-lucide="refresh-cw"></i>
+                            Hitung perbandingan
+                        </button>
+                    </div>
+
+                    <div class="callout">
+                        <i data-lucide="info"></i>
+                        <span>Perbandingan menggunakan konfigurasi quantum MLFQ yang sedang aktif. Jalankan ulang setelah mengubah data atau quantum.</span>
+                    </div>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Perbandingan metrik</h2>
+                                <p>Nilai rata-rata yang lebih rendah ditandai sebagai hasil lebih kecil.</p>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Metrik</th>
+                                        <th>SJF</th>
+                                        <th>MLFQ</th>
+                                        <th>Hasil</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="comparisonBody">
+                                    <tr>
+                                        <td colspan="4" class="empty-cell">Jalankan perbandingan untuk melihat hasil.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Grafik rata-rata waktu</h2>
+                                <p>Perbandingan waiting, turnaround, dan response time.</p>
+                            </div>
+                        </div>
+                        <div id="comparisonChart" class="empty-state">Belum ada data grafik.</div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="section-heading">
+                            <div>
+                                <h2>Kesimpulan otomatis</h2>
+                            </div>
+                        </div>
+                        <div id="comparisonConclusion" class="empty-state">Hasil analisis akan muncul setelah perbandingan dihitung.</div>
+                    </section>
+                </section>
+
+                <section class="page" id="page-guide">
+                    <div class="page-heading">
+                        <div>
+                            <p class="eyebrow">DOKUMENTASI</p>
+                            <h1>Panduan penggunaan</h1>
+                            <p class="subtitle">Konsep dasar dan cara membaca hasil simulasi.</p>
+                        </div>
+                    </div>
+
+                    <section class="panel guide-content">
+                        <h2>1. Apa itu CPU Scheduling?</h2>
+                        <p>CPU Scheduling atau penjadwalan CPU adalah mekanisme sistem operasi untuk menentukan proses yang memperoleh kesempatan menggunakan CPU. Tujuannya antara lain meningkatkan pemanfaatan CPU, mengurangi waktu tunggu, dan memberikan respons yang baik.</p>
+
+                        <h2>2. Shortest Job First (SJF)</h2>
+                        <p>SJF Non-Preemptive memilih proses siap dengan burst time paling kecil. Setelah proses dipilih, CPU menjalankannya sampai selesai. Jika tidak ada proses yang sudah tiba, CPU berada dalam kondisi idle. Jika burst time sama, prioritas diberikan kepada arrival time lebih awal, kemudian urutan input.</p>
+
+                        <h2>3. Multilevel Feedback Queue (MLFQ)</h2>
+                        <p>MLFQ menggunakan beberapa antrean dengan tingkat prioritas berbeda. Pada simulator ini, Q1 menggunakan Round Robin dengan quantum awal 2, Q2 menggunakan Round Robin dengan quantum awal 4, dan Q3 menggunakan FCFS. Proses baru masuk Q1. Proses yang menghabiskan quantum tanpa selesai turun satu level.</p>
+
+                        <p><strong>Kebijakan preemption:</strong> kedatangan proses baru di Q1 dapat menghentikan proses Q2 atau Q3. Proses yang dihentikan mempertahankan level dan sisa quantum. Tidak ada preemption antarproses pada level yang sama. Kedatangan pada waktu yang sama dimasukkan menurut urutan input sebelum keputusan penjadwalan berikutnya.</p>
+
+                        <h2>4. Istilah dan rumus</h2>
+                        <div class="definition-list">
+                            <div>
+                                <strong>Arrival Time (AT)</strong>
+                                <span>Waktu ketika proses tiba di sistem.</span>
+                            </div>
+                            <div>
+                                <strong>Burst Time (BT)</strong>
+                                <span>Total waktu CPU yang dibutuhkan proses.</span>
+                            </div>
+                            <div>
+                                <strong>Completion Time (CT)</strong>
+                                <span>Waktu ketika proses selesai dieksekusi.</span>
+                            </div>
+                            <div>
+                                <strong>Turnaround Time (TAT)</strong>
+                                <span>Total waktu sejak proses tiba hingga selesai.</span>
+                            </div>
+                            <div>
+                                <strong>Waiting Time (WT)</strong>
+                                <span>Total waktu proses menunggu di antrean.</span>
+                            </div>
+                            <div>
+                                <strong>Response Time (RT)</strong>
+                                <span>Waktu dari kedatangan hingga pertama kali memperoleh CPU.</span>
+                            </div>
+                        </div>
+
+                        <div class="formula-box">
+                            <p>TAT = CT − AT</p>
+                            <p>WT = TAT − BT</p>
+                            <p>RT = Waktu mulai pertama − AT</p>
+                        </div>
+
+                        <h2>5. Contoh perhitungan</h2>
+                        <p>Misalnya P1 memiliki AT = 0, BT = 7, dan selesai pada CT = 7. Maka TAT = 7 − 0 = 7, WT = 7 − 7 = 0, dan RT = 0 − 0 = 0.</p>
+
+                        <h2>6. Cara menggunakan aplikasi</h2>
+                        <ol>
+                            <li>Buka Dashboard dan masukkan proses melalui formulir atau pilih data contoh.</li>
+                            <li>Buka Simulasi SJF lalu jalankan perhitungan.</li>
+                            <li>Buka Simulasi MLFQ, atur quantum jika diperlukan, kemudian jalankan.</li>
+                            <li>Buka Perbandingan untuk membandingkan metrik kedua algoritma.</li>
+                            <li>Gunakan diagram Gantt dan penjelasan langkah untuk mempelajari urutan eksekusi.</li>
+                        </ol>
+
+                        <h2>7. Cara membaca diagram Gantt</h2>
+                        <p>Setiap blok menunjukkan proses yang menggunakan CPU pada rentang waktu tertentu. Segmen idle menunjukkan CPU tidak memiliki proses siap. Pada diagram MLFQ, label Q1, Q2, atau Q3 menunjukkan level antrean saat proses dijalankan. Pilih segmen untuk melihat detail waktu dan durasinya.</p>
+                    </section>
+                </section>
+
+                <footer class="footer">
+                    CPU Scheduler Simulator
+                    <span>Media pembelajaran Sistem Operasi · v1.0</span>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="segment-tooltip" id="segmentTooltip" role="status"></div>
+</body>
+</html>
